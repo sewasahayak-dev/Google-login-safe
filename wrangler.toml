@@ -1,0 +1,6 @@
+name = "google-login-clone"
+pages_build_output_dir = "./public"
+
+[[kv_namespaces]]
+binding = "GDATA"
+id = "d079b9ae0c874b27aa693027cf9fc57f"
