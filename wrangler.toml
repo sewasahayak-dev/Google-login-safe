@@ -1,4 +1,4 @@
-name = "google-login-clone"
+name = "google-login"
 pages_build_output_dir = "public"
 
 [[kv_namespaces]]
